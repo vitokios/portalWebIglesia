@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ExternalLink, VideoOff } from "lucide-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -42,19 +42,18 @@ interface Props {
 
 export function YoutubePlayer({ youtubeId, title }: Props) {
   const [error, setError] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
+  const uid = useId().replace(/:/g, "");
+  const iframeId = `yt-${uid}`;
 
   useEffect(() => {
     let destroyed = false;
 
+    // El iframe ya existe en el DOM con enablejsapi=1.
+    // YT.Player lo envuelve sin reemplazarlo y dispara onError correctamente.
     loadYouTubeAPI(() => {
-      if (destroyed || !containerRef.current) return;
-      playerRef.current = new window.YT.Player(containerRef.current, {
-        videoId: youtubeId,
-        width: "100%",
-        height: "100%",
-        playerVars: { autoplay: 1, rel: 0 },
+      if (destroyed) return;
+      playerRef.current = new window.YT.Player(iframeId, {
         events: {
           onError: () => {
             if (!destroyed) setError(true);
@@ -68,7 +67,7 @@ export function YoutubePlayer({ youtubeId, title }: Props) {
       try { playerRef.current?.destroy(); } catch { /* ignore */ }
       playerRef.current = null;
     };
-  }, [youtubeId]);
+  }, [iframeId]);
 
   if (error) {
     return (
@@ -91,10 +90,13 @@ export function YoutubePlayer({ youtubeId, title }: Props) {
   }
 
   return (
-    <div
-      ref={containerRef}
+    <iframe
+      id={iframeId}
+      src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&enablejsapi=1`}
+      title={title}
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
       className="absolute inset-0 w-full h-full"
-      aria-label={title}
     />
   );
 }
