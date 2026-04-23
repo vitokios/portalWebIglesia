@@ -24,7 +24,7 @@ export default async function HomePage() {
     sanityFetch({ query: videosQuery }),
   ]);
 
-  const eventos: Evento[] = (rawEventos ?? []).map((e, i) => ({
+  const eventos: Evento[] = (rawEventos ?? []).map((e: Record<string, unknown>, i: number) => ({
     id: i + 1,
     titulo: e.titulo ?? "",
     descripcion: e.descripcion ?? "",
@@ -37,9 +37,9 @@ export default async function HomePage() {
     imagen: e.imagen ? urlFor(e.imagen).width(800).quality(80).url() : undefined,
   }));
 
-  const noticias: Noticia[] = (rawNoticias ?? []).map((n, i) => ({
+  const noticias: Noticia[] = (rawNoticias ?? []).map((n: Record<string, unknown>, i: number) => ({
     id: i + 1,
-    slug: n.slug?.current ?? "",
+    slug: (n.slug as { current?: string })?.current ?? "",
     titulo: n.titulo ?? "",
     resumen: n.resumen ?? "",
     contenido: "",
@@ -50,7 +50,7 @@ export default async function HomePage() {
     destacada: n.destacada ?? false,
   }));
 
-  const videos: VideoEstudio[] = (rawVideos ?? []).map((v, i) => ({
+  const videos: VideoEstudio[] = (rawVideos ?? []).map((v: Record<string, unknown>, i: number) => ({
     id: i + 1,
     youtubeId: v.youtubeId ?? "",
     titulo: v.titulo ?? "",

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function EscuelaDominicalPage() {
   const { data: rawLecciones } = await sanityFetch({ query: leccionesQuery });
 
-  const lecciones: LeccionDominical[] = (rawLecciones ?? []).map((l, i) => ({
+  const lecciones: LeccionDominical[] = (rawLecciones ?? []).map((l: Record<string, unknown>, i: number) => ({
     id: i + 1,
     titulo: l.titulo ?? "",
     serie: l.serie ?? "",

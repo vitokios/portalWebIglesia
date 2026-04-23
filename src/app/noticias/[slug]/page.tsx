@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
 import { noticiaBySlugQuery, slugsNoticiasQuery, noticiasQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { categoriaBadgeStyle, formatearFechaNoticia, type Noticia } from "../data";
@@ -19,10 +20,10 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const { data } = await sanityFetch({ query: slugsNoticiasQuery });
+  const data = await client.fetch(slugsNoticiasQuery);
   return (data ?? [])
-    .filter((item) => item.slug)
-    .map((item) => ({ slug: item.slug as string }));
+    .filter((item: Record<string, unknown>) => item.slug)
+    .map((item: Record<string, unknown>) => ({ slug: item.slug as string }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -54,11 +55,11 @@ export default async function NoticiaDetallePage({ params }: Props) {
 
   // Noticias relacionadas (misma categoría, excluyendo la actual)
   const relacionadas: Noticia[] = (rawNoticias ?? [])
-    .filter((n) => n.slug?.current !== slug && n.categoria === rawNoticia.categoria)
+    .filter((n: Record<string, unknown>) => (n.slug as Record<string, string>)?.current !== slug && n.categoria === rawNoticia.categoria)
     .slice(0, 3)
-    .map((n, i) => ({
+    .map((n: Record<string, unknown>, i: number) => ({
       id: i + 1,
-      slug: n.slug?.current ?? "",
+      slug: (n.slug as { current?: string })?.current ?? "",
       titulo: n.titulo ?? "",
       resumen: n.resumen ?? "",
       contenido: "",

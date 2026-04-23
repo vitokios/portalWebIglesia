@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function EstudiosPage() {
   const { data: rawVideos } = await sanityFetch({ query: videosQuery });
 
-  const videos: VideoEstudio[] = (rawVideos ?? []).map((v, i) => ({
+  const videos: VideoEstudio[] = (rawVideos ?? []).map((v: Record<string, unknown>, i: number) => ({
     id: i + 1,
     youtubeId: v.youtubeId ?? "",
     titulo: v.titulo ?? "",

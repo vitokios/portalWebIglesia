@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 export default async function NoticiasPage() {
   const { data: rawNoticias } = await sanityFetch({ query: noticiasQuery });
 
-  const noticias: Noticia[] = (rawNoticias ?? []).map((n, i) => ({
+  const noticias: Noticia[] = (rawNoticias ?? []).map((n: Record<string, unknown>, i: number) => ({
     id: i + 1,
-    slug: n.slug?.current ?? "",
+    slug: (n.slug as { current?: string })?.current ?? "",
     titulo: n.titulo ?? "",
     resumen: n.resumen ?? "",
     contenido: "",

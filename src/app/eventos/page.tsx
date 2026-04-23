@@ -19,7 +19,7 @@ export default async function EventosPage() {
   const { data: rawEventos } = await sanityFetch({ query: eventosQuery });
 
   // Normalizar datos de Sanity al shape que esperan los componentes
-  const eventos: Evento[] = (rawEventos ?? []).map((e, i) => ({
+  const eventos: Evento[] = (rawEventos ?? []).map((e: Record<string, unknown>, i: number) => ({
     id: i + 1,
     titulo: e.titulo ?? "",
     descripcion: e.descripcion ?? "",

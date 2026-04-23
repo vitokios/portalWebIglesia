@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function AvisosPage() {
   const { data: rawAvisos } = await sanityFetch({ query: avisosQuery });
 
-  const avisos: Aviso[] = (rawAvisos ?? []).map((a, i) => ({
+  const avisos: Aviso[] = (rawAvisos ?? []).map((a: Record<string, unknown>, i: number) => ({
     id: i + 1,
     titulo: a.titulo ?? "",
     contenido: a.contenido ?? "",
