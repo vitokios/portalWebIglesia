@@ -3,6 +3,38 @@
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink, VideoOff } from "lucide-react";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+
+let apiLoaded = false;
+const readyCallbacks: (() => void)[] = [];
+
+function loadYouTubeAPI(callback: () => void) {
+  if (typeof window === "undefined") return;
+  if (window.YT?.Player) {
+    callback();
+    return;
+  }
+  readyCallbacks.push(callback);
+  if (!apiLoaded) {
+    apiLoaded = true;
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(script);
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      prev?.();
+      readyCallbacks.forEach((cb) => cb());
+      readyCallbacks.length = 0;
+    };
+  }
+}
+
 interface Props {
   youtubeId: string;
   title: string;
@@ -10,25 +42,33 @@ interface Props {
 
 export function YoutubePlayer({ youtubeId, title }: Props) {
   const [error, setError] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<any>(null);
 
   useEffect(() => {
-    function handleMessage(event: MessageEvent) {
-      if (event.origin !== "https://www.youtube.com") return;
-      try {
-        const data = JSON.parse(event.data as string);
-        // Códigos: 2=ID inválido, 5=html5, 100=no encontrado/privado, 101/150=embed bloqueado
-        if (data.event === "onError") {
-          setError(true);
-        }
-      } catch {
-        // no es JSON, ignorar
-      }
-    }
+    let destroyed = false;
 
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
+    loadYouTubeAPI(() => {
+      if (destroyed || !containerRef.current) return;
+      playerRef.current = new window.YT.Player(containerRef.current, {
+        videoId: youtubeId,
+        width: "100%",
+        height: "100%",
+        playerVars: { autoplay: 1, rel: 0 },
+        events: {
+          onError: () => {
+            if (!destroyed) setError(true);
+          },
+        },
+      });
+    });
+
+    return () => {
+      destroyed = true;
+      try { playerRef.current?.destroy(); } catch { /* ignore */ }
+      playerRef.current = null;
+    };
+  }, [youtubeId]);
 
   if (error) {
     return (
@@ -51,13 +91,10 @@ export function YoutubePlayer({ youtubeId, title }: Props) {
   }
 
   return (
-    <iframe
-      ref={iframeRef}
-      src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&enablejsapi=1`}
-      title={title}
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
+    <div
+      ref={containerRef}
       className="absolute inset-0 w-full h-full"
+      aria-label={title}
     />
   );
 }
