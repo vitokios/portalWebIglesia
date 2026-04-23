@@ -8,7 +8,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { videosQuery } from "@/sanity/lib/queries";
 import { type VideoEstudio } from "./data";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = { 
   title: "Estudios Bíblicos | IMP Lo Hermida",
   description:
     "Cápsulas bíblicas, predicaciones y estudios preparados por los hermanos de la Iglesia Metodista Pentecostal Lo Hermida.",
