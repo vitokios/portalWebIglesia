@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { categoriaConfig, type VideoEstudio } from "@/app/estudios/data";
+import { YoutubeThumbnail } from "@/components/ui/YoutubeThumbnail";
 
 interface Props {
   videos: VideoEstudio[];
@@ -52,7 +53,6 @@ export function EstudiosPreview({ videos }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {preview.map((video, index) => {
             const config = categoriaConfig[video.categoria];
-            const thumbnail = `https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`;
             const reproduciendo = videoAbierto === video.id;
 
             return (
@@ -75,10 +75,7 @@ export function EstudiosPreview({ videos }: Props) {
                     />
                   ) : (
                     <>
-                      <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url(${thumbnail})` }}
-                      />
+                      <YoutubeThumbnail youtubeId={video.youtubeId} />
                       <div className="absolute inset-0 bg-black/30" />
                       <button
                         onClick={() => setVideoAbierto(video.id)}

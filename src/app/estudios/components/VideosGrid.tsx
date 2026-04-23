@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, User, Clock, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { YoutubeThumbnail } from "@/components/ui/YoutubeThumbnail";
 import {
   categoriaConfig,
   type CategoriaVideo,
@@ -81,7 +82,6 @@ export function VideosGrid({ videos, excluirId }: Props) {
           ) : (
             videosFiltrados.map((video, index) => {
               const config = categoriaConfig[video.categoria];
-              const thumbnail = `https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`;
               const reproduciendo = videoAbierto === video.id;
 
               return (
@@ -104,10 +104,7 @@ export function VideosGrid({ videos, excluirId }: Props) {
                       />
                     ) : (
                       <>
-                        <div
-                          className="absolute inset-0 bg-cover bg-center"
-                          style={{ backgroundImage: `url(${thumbnail})` }}
-                        />
+                        <YoutubeThumbnail youtubeId={video.youtubeId} />
                         <div className="absolute inset-0 bg-black/30" />
                         <button
                           onClick={() => setVideoAbierto(video.id)}

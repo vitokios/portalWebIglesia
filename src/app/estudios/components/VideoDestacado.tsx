@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Play, BookOpen, User, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { YoutubeThumbnail } from "@/components/ui/YoutubeThumbnail";
 import {
   type VideoEstudio,
   categoriaConfig,
@@ -17,7 +18,6 @@ interface Props {
 export function VideoDestacado({ video }: Props) {
   const [reproduciendo, setReproduciendo] = useState(false);
   const config = categoriaConfig[video.categoria];
-  const thumbnail = `https://img.youtube.com/vi/${video.youtubeId}/maxresdefault.jpg`;
 
   return (
     <div>
@@ -44,10 +44,7 @@ export function VideoDestacado({ video }: Props) {
           ) : (
             <>
               {/* Thumbnail con overlay */}
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${thumbnail})` }}
-              />
+              <YoutubeThumbnail youtubeId={video.youtubeId} quality="maxresdefault" />
               <div className="absolute inset-0 bg-black/40" />
 
               {/* Botón play */}
