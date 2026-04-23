@@ -4,6 +4,7 @@ import { Hero } from "@/components/sections/Hero";
 import { EventosPreview } from "@/components/sections/EventosPreview";
 import { NoticiasPreview } from "@/components/sections/NoticiasPreview";
 import { EstudiosPreview } from "@/components/sections/EstudiosPreview";
+import { VersiculoDelDia } from "@/components/sections/VersiculoDelDia";
 import { AvisosSection } from "@/components/sections/AvisosSection";
 import { OracionSection } from "@/components/sections/OracionSection";
 import { sanityFetch } from "@/sanity/lib/live";
@@ -70,6 +71,7 @@ export default async function HomePage() {
         <Hero />
         <EventosPreview eventos={eventos} />
         <NoticiasPreview noticias={noticias} />
+        <VersiculoDelDia />
         <EstudiosPreview videos={videos} />
         <AvisosSection />
         <OracionSection />
