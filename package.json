@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "vercel --prod --env NEXT_PUBLIC_SANITY_PROJECT_ID=71p1qdki --env NEXT_PUBLIC_SANITY_DATASET=production"
+    "deploy": "npx vercel --prod --env NEXT_PUBLIC_SANITY_PROJECT_ID=71p1qdki --env NEXT_PUBLIC_SANITY_DATASET=production"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
