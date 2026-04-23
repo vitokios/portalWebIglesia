@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Play, BookOpen, User, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { YoutubeThumbnail } from "@/components/ui/YoutubeThumbnail";
+import { YoutubePlayer } from "@/components/ui/YoutubePlayer";
 import {
   type VideoEstudio,
   categoriaConfig,
@@ -34,13 +35,7 @@ export function VideoDestacado({ video }: Props) {
         {/* Player */}
         <div className="relative aspect-video bg-black">
           {reproduciendo ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&rel=0`}
-              title={video.titulo}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
+            <YoutubePlayer youtubeId={video.youtubeId} title={video.titulo} />
           ) : (
             <>
               {/* Thumbnail con overlay */}

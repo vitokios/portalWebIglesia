@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, User, Clock, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { YoutubeThumbnail } from "@/components/ui/YoutubeThumbnail";
+import { YoutubePlayer } from "@/components/ui/YoutubePlayer";
 import {
   categoriaConfig,
   type CategoriaVideo,
@@ -95,13 +96,7 @@ export function VideosGrid({ videos, excluirId }: Props) {
                   {/* Thumbnail / Player */}
                   <div className="relative aspect-video bg-black shrink-0">
                     {reproduciendo ? (
-                      <iframe
-                        src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&rel=0`}
-                        title={video.titulo}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="absolute inset-0 w-full h-full"
-                      />
+                      <YoutubePlayer youtubeId={video.youtubeId} title={video.titulo} />
                     ) : (
                       <>
                         <YoutubeThumbnail youtubeId={video.youtubeId} />

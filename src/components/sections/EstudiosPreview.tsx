@@ -9,6 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { categoriaConfig, type VideoEstudio } from "@/app/estudios/data";
 import { YoutubeThumbnail } from "@/components/ui/YoutubeThumbnail";
+import { YoutubePlayer } from "@/components/ui/YoutubePlayer";
 
 interface Props {
   videos: VideoEstudio[];
@@ -66,13 +67,7 @@ export function EstudiosPreview({ videos }: Props) {
               >
                 <div className="relative aspect-video bg-black shrink-0">
                   {reproduciendo ? (
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&rel=0`}
-                      title={video.titulo}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full"
-                    />
+                    <YoutubePlayer youtubeId={video.youtubeId} title={video.titulo} />
                   ) : (
                     <>
                       <YoutubeThumbnail youtubeId={video.youtubeId} />
