@@ -139,6 +139,17 @@ export const categoriaConfig: Record<
   },
 };
 
+// Acepta tanto "dQw4w9WgXcQ" como "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+export function extractYoutubeId(input: string): string {
+  if (!input) return "";
+  try {
+    const url = new URL(input);
+    return url.searchParams.get("v") ?? input;
+  } catch {
+    return input.trim();
+  }
+}
+
 export function formatearFechaVideo(fechaStr: string): string {
   const fecha = new Date(fechaStr + "T00:00:00");
   return fecha.toLocaleDateString("es-CL", {

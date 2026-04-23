@@ -11,7 +11,7 @@ import { eventosQuery, noticiasQuery, videosQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { type Evento } from "@/app/eventos/data";
 import { type Noticia } from "@/app/noticias/data";
-import { type VideoEstudio } from "@/app/estudios/data";
+import { extractYoutubeId, type VideoEstudio } from "@/app/estudios/data";
 
 export default async function HomePage() {
   const [
@@ -52,7 +52,7 @@ export default async function HomePage() {
 
   const videos: VideoEstudio[] = (rawVideos ?? []).map((v: Record<string, unknown>, i: number) => ({
     id: i + 1,
-    youtubeId: v.youtubeId ?? "",
+    youtubeId: extractYoutubeId(String(v.youtubeId ?? "")),
     titulo: v.titulo ?? "",
     descripcion: v.descripcion ?? "",
     predicador: v.predicador ?? "",

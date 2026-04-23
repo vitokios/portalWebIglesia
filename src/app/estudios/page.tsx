@@ -6,7 +6,7 @@ import { VideoDestacado } from "./components/VideoDestacado";
 import { VideosGrid } from "./components/VideosGrid";
 import { sanityFetch } from "@/sanity/lib/live";
 import { videosQuery } from "@/sanity/lib/queries";
-import { type VideoEstudio } from "./data";
+import { extractYoutubeId, type VideoEstudio } from "./data";
 
 export const metadata: Metadata = { 
   title: "Estudios Bíblicos | IMP Lo Hermida",
@@ -19,7 +19,7 @@ export default async function EstudiosPage() {
 
   const videos: VideoEstudio[] = (rawVideos ?? []).map((v: Record<string, unknown>, i: number) => ({
     id: i + 1,
-    youtubeId: v.youtubeId ?? "",
+    youtubeId: extractYoutubeId(String(v.youtubeId ?? "")),
     titulo: v.titulo ?? "",
     descripcion: v.descripcion ?? "",
     predicador: v.predicador ?? "",
