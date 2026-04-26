@@ -33,7 +33,7 @@ export function Logo({
       textSub: "#6B7280",
     },
     light: {
-      primary: "#FFFFFF",
+      primary: "rgba(255,255,255,0.08)",
       accent: "#C9A84C",
       text: "#FFFFFF",
       textSub: "rgba(255,255,255,0.65)",
@@ -91,7 +91,7 @@ export function Logo({
         r="47"
         stroke={colors.accent}
         strokeWidth="1.5"
-        strokeOpacity="0.4"
+        strokeOpacity={theme === "light" ? 0.6 : 0.4}
         fill="none"
       />
     </svg>
