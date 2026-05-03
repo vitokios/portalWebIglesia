@@ -5,10 +5,11 @@ import { EventosPreview } from "@/components/sections/EventosPreview";
 import { NoticiasPreview } from "@/components/sections/NoticiasPreview";
 import { EstudiosPreview } from "@/components/sections/EstudiosPreview";
 import { VersiculoDelDia } from "@/components/sections/VersiculoDelDia";
+import { HorariosStrip, type Horario } from "@/components/sections/HorariosStrip";
 import { AvisosSection } from "@/components/sections/AvisosSection";
 import { OracionSection } from "@/components/sections/OracionSection";
 import { sanityFetch } from "@/sanity/lib/live";
-import { eventosQuery, noticiasQuery, videosQuery } from "@/sanity/lib/queries";
+import { eventosQuery, noticiasQuery, videosQuery, horariosQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { type Evento } from "@/app/eventos/data";
 import { type Noticia } from "@/app/noticias/data";
@@ -19,11 +20,19 @@ export default async function HomePage() {
     { data: rawEventos },
     { data: rawNoticias },
     { data: rawVideos },
+    { data: rawHorarios },
   ] = await Promise.all([
     sanityFetch({ query: eventosQuery }),
     sanityFetch({ query: noticiasQuery }),
     sanityFetch({ query: videosQuery }),
+    sanityFetch({ query: horariosQuery }),
   ]);
+
+  const horarios: Horario[] = (rawHorarios ?? []).map((h: Record<string, unknown>) => ({
+    dia: String(h.dia ?? ""),
+    hora: String(h.hora ?? ""),
+    culto: String(h.culto ?? ""),
+  }));
 
   const eventos: Evento[] = (rawEventos ?? []).map((e: Record<string, unknown>, i: number) => ({
     id: i + 1,
@@ -69,11 +78,12 @@ export default async function HomePage() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <EventosPreview eventos={eventos} />
+        <HorariosStrip horarios={horarios} />
+        <AvisosSection />
         <NoticiasPreview noticias={noticias} />
         <VersiculoDelDia />
         <EstudiosPreview videos={videos} />
-        <AvisosSection />
+        <EventosPreview eventos={eventos} />
         <OracionSection />
       </main>
       <Footer />

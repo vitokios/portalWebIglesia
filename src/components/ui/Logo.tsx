@@ -28,21 +28,21 @@ export function Logo({
   const colors = {
     dark: {
       primary: "#1B2E5E",   // navy
-      accent: "#C9A84C",    // dorado
+      accent: "#B83332",    // rojo institucional
       text: "#1B2E5E",
       textSub: "#6B7280",
     },
     light: {
       primary: "rgba(255,255,255,0.08)",
-      accent: "#C9A84C",
+      accent: "#B83332",
       text: "#FFFFFF",
       textSub: "rgba(255,255,255,0.65)",
     },
     gold: {
-      primary: "#C9A84C",
-      accent: "#C9A84C",
-      text: "#C9A84C",
-      textSub: "#C9A84C",
+      primary: "#B83332",
+      accent: "#B83332",
+      text: "#B83332",
+      textSub: "#B83332",
     },
   }[theme];
 

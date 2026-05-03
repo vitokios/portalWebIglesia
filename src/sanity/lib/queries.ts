@@ -143,6 +143,18 @@ export const videosQuery = defineQuery(`
   }
 `)
 
+// ─── Horarios ─────────────────────────────────────────────────────────────────
+
+export const horariosQuery = defineQuery(`
+  *[_type == "horario" && activo == true] | order(orden asc) {
+    _id,
+    dia,
+    hora,
+    culto,
+    orden
+  }
+`)
+
 export const videoDestacadoQuery = defineQuery(`
   *[_type == "videoEstudio" && destacado == true] | order(fecha desc) [0] {
     _id,

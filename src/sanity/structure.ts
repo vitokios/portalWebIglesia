@@ -5,6 +5,13 @@ export const structure: StructureResolver = (S) =>
     .title('IMP Lo Hermida')
     .items([
       S.listItem()
+        .title('Horarios de Culto')
+        .schemaType('horario')
+        .child(S.documentTypeList('horario').title('Horarios de Culto')),
+
+      S.divider(),
+
+      S.listItem()
         .title('Eventos')
         .schemaType('evento')
         .child(S.documentTypeList('evento').title('Eventos')),

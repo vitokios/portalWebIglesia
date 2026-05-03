@@ -24,12 +24,21 @@ Documentación técnica y operativa del portal web de la congregación.
 Portal web institucional para la Iglesia Metodista Pentecostal IMP Lo Hermida (Peñalolén, Santiago, Chile). Aproximadamente 150 miembros.
 
 **URLs:**
-- Desarrollo: `http://localhost:3000`
-- Staging: `https://portal-web-iglesia.vercel.app`
-- Dominio iglesia (staging): `https://testweb.iumplohermida.cl`
-- Dominio producción (futuro): `https://www.iumplohermida.cl`
+- Desarrollo local: `http://localhost:3000`
+- Studio local: `http://localhost:3000/studio`
+- Producción: `https://testweb.iumplohermida.cl`
+- Studio producción: `https://testweb.iumplohermida.cl/studio`
+- Dominio definitivo (futuro): `https://www.iumplohermida.cl`
 
 **Repositorio:** `https://github.com/vitokios/portalWebIglesia` (privado)
+
+**Cuentas y accesos:**
+| Servicio | URL | Usuario |
+|---------|-----|---------|
+| Vercel (hosting) | vercel.com | vriquelmeg@gmail.com |
+| Sanity (CMS) | sanity.io | cuenta vinculada a Google |
+| GitHub (código) | github.com/vitokios | vitokios |
+| Cloudflare (DNS) | cloudflare.com | cuenta del administrador |
 
 ---
 
@@ -45,7 +54,6 @@ Portal web institucional para la Iglesia Metodista Pentecostal IMP Lo Hermida (P
 | Sanity | v3 | CMS headless |
 | next-sanity | 12 | Integración Sanity + Next.js |
 | shadcn/ui | — | Componentes base (@base-ui/react) |
-| Embla Carousel | 8 | Carrusel del Hero |
 | Lucide React | 1 | Iconografía |
 | Vercel | — | Hosting y deploy |
 | Cloudflare | — | DNS del dominio |
@@ -85,6 +93,15 @@ URL: `https://testweb.iumplohermida.cl/studio`
 Solo personas con acceso al proyecto en `sanity.io` pueden ingresar.
 
 ### Tipos de contenido (schemas)
+
+#### Horario de Culto (`horario`)
+| Campo | Tipo | Requerido |
+|-------|------|-----------|
+| Día | texto (Ej: "Domingo") | ✓ |
+| Hora | texto (Ej: "11:00") | ✓ |
+| Nombre del culto | texto (Ej: "Culto General") | ✓ |
+| Orden de aparición | número (1, 2, 3...) | ✓ |
+| ¿Activo? | booleano | — |
 
 #### Evento (`evento`)
 | Campo | Tipo | Requerido |
@@ -219,7 +236,8 @@ PortalWebIglesia/
 │       │   ├── noticia.ts
 │       │   ├── aviso.ts
 │       │   ├── leccion.ts
-│       │   └── videoEstudio.ts
+│       │   ├── videoEstudio.ts
+│       │   └── horario.ts
 │       └── structure.ts                # Menú del Studio en español
 ├── sanity.config.ts                    # Configuración del Studio
 ├── sanity.cli.ts                       # CLI de Sanity
@@ -231,15 +249,23 @@ PortalWebIglesia/
 
 ## 7. Cómo cargar contenido
 
+> Para la guía completa orientada al equipo pastoral y secretaría, ver **`GUIA-CONTENIDO.md`**.
+
 ### Acceder al Studio
 1. Ir a `https://testweb.iumplohermida.cl/studio`
-2. Iniciar sesión con la cuenta de Sanity
+2. Iniciar sesión con la cuenta de Sanity (sanity.io)
+3. Para agregar usuarios nuevos: sanity.io → proyecto `portal-web-iglesia` → Members → Invite
+
+### Cargar horarios de culto
+1. Clic en **Horarios de Culto** → **+ Crear**
+2. Completar: Día, Hora, Nombre del culto, Orden (1, 2, 3...) y dejar **¿Activo?** en verdadero
+3. Publicar
+> Mientras no haya horarios cargados en Sanity, el portal muestra valores predeterminados hardcodeados.
 
 ### Publicar un evento
 1. Clic en **Eventos** → **+ Crear**
 2. Completar los campos requeridos
-3. Clic en **Publicar** (botón verde)
-4. El evento aparece en el portal en segundos
+3. Clic en **Publicar** — aparece en el portal en segundos
 
 ### Publicar una noticia
 1. Clic en **Noticias** → **+ Crear**
@@ -248,16 +274,18 @@ PortalWebIglesia/
 4. Clic en **Publicar**
 
 ### Cargar videos de YouTube
-1. Copiar el ID del video desde la URL: `youtube.com/watch?v=`**dQw4w9WgXcQ**
-2. En el Studio → **Estudios Bíblicos** → **+ Crear**
-3. Pegar el ID en el campo **ID de YouTube**
+1. Verificar que el video se puede embeber: abrir `https://www.youtube.com/embed/ID_DEL_VIDEO`
+2. Copiar solo el ID desde la URL: `youtube.com/watch?v=`**dQw4w9WgXcQ**
+3. Studio → **Estudios Bíblicos** → **+ Crear** → pegar el ID (no la URL completa)
 4. Completar el resto y publicar
+> Si el portal muestra "Este video no está disponible para reproducir aquí", el video tiene embedding desactivado en YouTube Studio (Details → More options → Allow embedding).
 
 ### Marcar la lección del domingo
 1. En **Escuela Dominical**, encontrar la lección de la semana
 2. Activar el campo **¿Es la lección de este domingo?**
 3. Desactivar ese campo en la lección anterior
 4. Publicar
+> Solo una lección puede tener este campo activo a la vez.
 
 ---
 
@@ -325,8 +353,39 @@ npx vercel domains inspect testweb.iumplohermida.cl
 
 ---
 
-## 10. Próximos pasos
+## 10. Deploy
 
+### Deploy manual (recomendado — repositorio privado)
+```bash
+npm run deploy
+```
+Este comando usa `npx vercel --prod` con las variables de entorno incluidas. No requiere que el repositorio sea público.
+
+### Deploy automático
+Si el repositorio es **público**, cada `git push` a `main` dispara un deploy automático en Vercel sin necesidad de correr nada.
+
+> **Nota:** Con el plan Hobby de Vercel y repositorio privado, los deploys automáticos quedan bloqueados. Usar siempre `npm run deploy` desde la terminal en ese caso.
+
+### Flujo de trabajo recomendado
+```bash
+# 1. Hacer cambios en el código
+# 2. Probar localmente
+npm run dev
+
+# 3. Subir cambios a GitHub
+git add .
+git commit -m "descripción del cambio"
+git push
+
+# 4. Deployar a producción
+npm run deploy
+```
+
+---
+
+## 11. Próximos pasos
+
+- [ ] Cargar horarios de culto reales en Sanity
 - [ ] Cargar contenido real en Sanity (eventos, noticias, lecciones, videos)
 - [ ] Reemplazar imágenes de Unsplash por fotos reales de la iglesia
 - [ ] Reemplazar IDs de YouTube de ejemplo por videos reales
@@ -335,4 +394,4 @@ npx vercel domains inspect testweb.iumplohermida.cl
 - [ ] Configurar formulario de oración para enviar emails (Resend o similar)
 - [ ] Pasar de `testweb.iumplohermida.cl` a `www.iumplohermida.cl`
 - [ ] Agregar Google Analytics o Plausible para ver visitas
-- [ ] Configurar usuarios adicionales en Sanity para que el pastor o secretaria carguen contenido sin ayuda técnica
+- [ ] Configurar usuarios adicionales en Sanity (sanity.io → proyecto → Members → Invite)
